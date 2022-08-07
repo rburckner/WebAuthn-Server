@@ -1,0 +1,67 @@
+{
+  "jwt": {
+    "expiresInSec": 86400
+  },
+  "logging": {
+    "morgan": {
+      "format": "dev"
+    }
+  },
+  "repositories": {
+    "mongoose": {
+      "host": "localhost",
+      "port": 27017,
+      "opts": {
+        "user": null,
+        "pass": null,
+        "autoIndex": true,
+        "useNewUrlParser": true,
+        "useUnifiedTopology": true,
+        "dbName": "test"
+      },
+      "uri": "mongodb://localhost/default"
+    }
+  },
+  "server": {
+    "port": 3000
+  },
+  "webauthn": {
+    "ChallengeByteLength": 32,
+    "Origin": "http://localhost:4200",
+    "PublicKeyCredentialCreationOptions": {
+      "attestation": "direct",
+      "authenticatorSelection": {
+        "userVerification": "preferred",
+        "authenticatorAttachement": "cross-platform"
+      },
+      "pubKeyCredParams": [
+        {
+          "type": "public-key",
+          "alg": -7,
+          "crv": 1
+        },
+        {
+          "type": "public-key",
+          "alg": -257
+        }
+      ],
+      "rp": {
+        "id": "localhost",
+        "name": "Dummy Relying Party"
+      },
+      "extensions": {
+        "credProps": true
+      }
+    },
+    "PublicKeyCredentialRequestOptions": {
+      "extensions": {},
+      "rpId": "localhost",
+      "userVerification": "preferred"
+    },
+    "Timeouts": {
+      "default": 300000,
+      "discouraged": 120000
+    },
+    "UniqueCredentialIds": true
+  }
+}

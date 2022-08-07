@@ -1,0 +1,19 @@
+{
+  "jwt": {
+    "expiresInSec": 60
+  },
+  "repositories": {
+    "mongoose": {
+      "host": "localhost",
+      "port": 27017,
+      "opts": {
+        "user": null,
+        "pass": null,
+        "autoIndex": true,
+        "useNewUrlParser": true,
+        "useUnifiedTopology": true,
+        "dbName": "test"
+      }
+    }
+  }
+}
