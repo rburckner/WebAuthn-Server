@@ -10,29 +10,24 @@ exports.ParseAuthenticatorData = function ParseAuthenticatorData(authData) {
   authData = authData.slice(4);
   const signCount = counterBuf.readUInt32BE(0);
 
-  let aaguid;
-  let credentialId;
-  let COSEPublicKey;
-
-  if (flags.AT) {
-    aaguid = authData.slice(0, 16);
-    authData = authData.slice(16);
-    const credentialIdLengthBuffer = authData.slice(0, 2);
-    authData = authData.slice(2);
-    const credentialIdLength = credentialIdLengthBuffer.readUInt16BE(0);
-    credentialId = authData.slice(0, credentialIdLength);
-    authData = authData.slice(credentialIdLength);
-    COSEPublicKey = authData;
-  }
-
-  return {
-    aaguid,
+  const result = {
     counterBuf,
-    credentialId,
-    COSEPublicKey,
     flags,
     flagsBuf,
     rpIdHash,
     signCount,
   };
+
+  if (flags.AT) {
+    result.aaguid = authData.slice(0, 16);
+    authData = authData.slice(16);
+    const credentialIdLengthBuffer = authData.slice(0, 2);
+    authData = authData.slice(2);
+    const credentialIdLength = credentialIdLengthBuffer.readUInt16BE(0);
+    result.credentialId = authData.slice(0, credentialIdLength);
+    authData = authData.slice(credentialIdLength);
+    result.COSEPublicKey = authData;
+  }
+
+  return result;
 };
