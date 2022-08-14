@@ -1,32 +1,72 @@
 const { flagsObj } = require("./flags");
 
-exports.ParseAuthenticatorData = function ParseAuthenticatorData(authData) {
-  const rpIdHash = authData.slice(0, 32);
-  authData = authData.slice(32);
-  const flagsBuf = authData.slice(0, 1);
-  authData = authData.slice(1);
-  const flags = flagsObj(flagsBuf[0]);
-  const counterBuf = authData.slice(0, 4);
-  authData = authData.slice(4);
-  const signCount = counterBuf.readUInt32BE(0);
+const BYTE_MAP = {
+  // in bytes
+  rpIdHash: {
+    start: () => 0,
+    length: 32,
+    end: () => BYTE_MAP.rpIdHash.start() + BYTE_MAP.rpIdHash.length,
+  },
+  flags: {
+    start: () => BYTE_MAP.rpIdHash.end(),
+    length: 1,
+    end: () => BYTE_MAP.flags.start() + BYTE_MAP.flags.length,
+  },
+  counter: {
+    start: () => BYTE_MAP.flags.end(),
+    length: 4,
+    end: () => BYTE_MAP.counter.start() + BYTE_MAP.counter.length,
+  },
+  aaguid: {
+    start: () => BYTE_MAP.counter.end(),
+    length: 16,
+    end: () => BYTE_MAP.aaguid.start() + BYTE_MAP.aaguid.length,
+  },
+  L: {
+    start: () => BYTE_MAP.aaguid.end(),
+    length: 2,
+    end: () => BYTE_MAP.L.start() + BYTE_MAP.L.length,
+  },
+  credentialId: {
+    start: () => BYTE_MAP.L.end(),
+    length: (authData) =>
+      authData.slice(BYTE_MAP.L.start(), BYTE_MAP.L.end()).readUInt16BE(0),
+    end: (authData) =>
+      BYTE_MAP.credentialId.start() + BYTE_MAP.credentialId.length(authData),
+  },
+  COSEPublicKey: {
+    start: (authData) => BYTE_MAP.credentialId.end(authData),
+  },
+};
 
+exports.ParseAuthenticatorData = function ParseAuthenticatorData(authData) {
+  const flagsBuf = authData.slice(BYTE_MAP.flags.start(), BYTE_MAP.flags.end());
+  const flags = flagsObj(flagsBuf[0]);
+  const counterBuf = authData.slice(
+    BYTE_MAP.counter.start(),
+    BYTE_MAP.counter.end()
+  );
   const result = {
-    counterBuf,
-    flags,
-    flagsBuf,
-    rpIdHash,
-    signCount,
+    flags: flagsObj(flagsBuf[0]),
+    rpIdHash: authData.slice(
+      BYTE_MAP.rpIdHash.start(),
+      BYTE_MAP.rpIdHash.end()
+    ),
+    signCount: counterBuf.readUInt32BE(0),
   };
 
   if (flags.AT) {
-    result.aaguid = authData.slice(0, 16);
-    authData = authData.slice(16);
-    const credentialIdLengthBuffer = authData.slice(0, 2);
-    authData = authData.slice(2);
-    const credentialIdLength = credentialIdLengthBuffer.readUInt16BE(0);
-    result.credentialId = authData.slice(0, credentialIdLength);
-    authData = authData.slice(credentialIdLength);
-    result.COSEPublicKey = authData;
+    result.aaguid = authData.slice(
+      BYTE_MAP.aaguid.start(),
+      BYTE_MAP.aaguid.end()
+    );
+    result.credentialId = authData.slice(
+      BYTE_MAP.credentialId.start(),
+      BYTE_MAP.credentialId.end(authData)
+    );
+    result.COSEPublicKey = authData.slice(
+      BYTE_MAP.COSEPublicKey.start(authData)
+    );
   }
 
   return result;
