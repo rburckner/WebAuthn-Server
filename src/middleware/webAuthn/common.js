@@ -14,9 +14,8 @@ exports.decorateAttestationLocals = async function decorateAttestationLocals(
   next
 ) {
   debug("decorateAttestationLocals");
-  const { credential } = req.body;
   try {
-    res.locals.credential = await parseRegisterRequest(credential);
+    res.locals.credential = await parseRegisterRequest(req.body);
     next();
   } catch (error) {
     next(createError(error));
@@ -29,9 +28,8 @@ exports.decorateAssertionLocals = async function decorateAttestationLocals(
   next
 ) {
   debug("decorateAssertionLocals");
-  const { credential } = req.body;
   try {
-    res.locals.credential = await parseAuthenticationAssertion(credential);
+    res.locals.credential = await parseAuthenticationAssertion(req.body);
     next();
   } catch (error) {
     next(createError(error));

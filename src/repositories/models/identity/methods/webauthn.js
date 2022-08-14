@@ -1,7 +1,7 @@
 "use strict";
 const config = require("config");
 const createError = require("http-errors");
-const { randomBase64 } = require("../../../../utils/crypto");
+const { randomBase64url } = require("../../../../utils/crypto");
 const debug = require("util").debug(
   `${process.env.SERVER_NAME}:repositories:models:identities:methods:webauthn`
 );
@@ -15,14 +15,15 @@ const {
 
 exports.addCredential = function addCredential({ id, response, type }) {
   debug(`addCredential`);
-  const { publicKey, transports } = response;
+  const { publicKey, publicKeyAlgorithm, transports } = response;
   const { signCount } = response.attestationObject.authData;
   this.webauthn.credentials.push({
     id,
     publicKey,
+    publicKeyAlgorithm,
     signCount,
-    type,
     transports,
+    type,
   });
   return this.save();
 };
@@ -33,15 +34,19 @@ exports.createCredentialsJSON = async function createCredentialsJSON() {
     PublicKeyCredentialCreationOptions.authenticatorSelection;
   const opts = {
     ...PublicKeyCredentialCreationOptions,
-    challenge: randomBase64(
+    challenge: randomBase64url(
       ChallengeByteLength > 16 ? ChallengeByteLength : 16
     ),
     excludeCredentials: this.excludeCredentials,
+    extensions: {
+      ...PublicKeyCredentialCreationOptions.extensions,
+      userHandle: this.id,
+    },
     timeout:
       userVerification === "discouraged"
         ? Timeouts.discouraged
         : Timeouts.default,
-    user: { id: this.id, name: this.name, displayName: this.displayName },
+    user: this.user,
   };
   const { challenge } = opts;
   debug(`Saving challenge to ${this._id} account`);
@@ -60,7 +65,7 @@ exports.createLoginChallenge = async function createLoginChallenge() {
     return { id, transports, type };
   });
   const { userVerification } = PublicKeyCredentialRequestOptions;
-  const challenge = randomBase64(
+  const challenge = randomBase64url(
     ChallengeByteLength > 16 ? ChallengeByteLength : 16
   );
   this.webauthn.challenges.push({ challenge });

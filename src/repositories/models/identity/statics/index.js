@@ -5,14 +5,9 @@ const debug = require("util").debug(
 
 const webauthn = require("./webauthn");
 
-async function CreateIdentity({ username, displayName }) {
-  displayName = displayName || username;
-  debug(`Creating new identity for displayName: ${displayName}`);
-  const nameExists = (await this.find({ displayName })).length > 0;
-  if (nameExists) {
-    throw createError(400, `Display name is taken.`);
-  }
-  const doc = new this({ displayName });
+async function CreateIdentity() {
+  const doc = new this();
+  debug(`New Identity created. ID: ${doc.id}`);
   return await doc.save();
 }
 

@@ -49,29 +49,24 @@ function validCredential(credential) {
 
 function validPublicKeyCredential(credential) {
   const KEYS_STR = ["clientDataJSON"];
+  const KEYS = [].concat(KEYS_STR);
   try {
     validCredential(credential);
-    const { rawId, response } = credential;
-
-    if (!isString(rawId)) {
-      throw new Error(
-        `Credential property 'rawId' must be of type 'string'. Received: ${typeof rawId}`
-      );
-    }
+    const { response } = credential;
     if (!isObject(response)) {
       throw new Error(
         `Credential property 'response' must be of type 'object'. Received: ${typeof response}`
       );
     }
-    if (!hasKeys(response, KEYS_STR)) {
+    if (!hasKeys(response, KEYS)) {
       throw new Error(
         `Credential response ${
-          KEYS_STR.length === 1 ? "property" : "properties"
-        } ${KEYS_STR.join(", ")} required.`
+          KEYS.length === 1 ? "property" : "properties"
+        } ${KEYS.join(", ")} required.`
       );
     }
     Object.keys(response)
-      .filter((key) => KEYS_STR.includes(key))
+      .filter((key) => KEYS.includes(key))
       .forEach((key) => {
         if (!isString(response[key])) {
           throw new Error(
@@ -85,10 +80,8 @@ function validPublicKeyCredential(credential) {
 }
 
 function validAttestation(credential) {
-  const KEYS_ARR = ["transports"];
-  const KEYS_NUM = ["publicKeyAlgorithm"];
-  const KEYS_STR = ["attestationObject", "authenticatorData", "publicKey"];
-  const KEYS = KEYS_ARR.concat(KEYS_NUM, KEYS_STR);
+  const KEYS_STR = ["attestationObject"];
+  const KEYS = [].concat(KEYS_STR);
   try {
     validPublicKeyCredential(credential);
     const { response } = credential;
@@ -110,44 +103,14 @@ function validAttestation(credential) {
           );
         }
       });
-    Object.keys(response)
-      .filter((key) => KEYS_NUM.includes(key))
-      .forEach((key) => {
-        if (!isNumber(response[key])) {
-          throw new Error(
-            `Credential response property '${key}' must be of type 'number'. Received: ${typeof response[
-              key
-            ]}`
-          );
-        }
-      });
-    Object.keys(response)
-      .filter((key) => KEYS_ARR.includes(key))
-      .forEach((key) => {
-        if (!Array.isArray(response[key])) {
-          throw new Error(
-            `Credential response property '${key}' must be of type 'Array'. Received: ${typeof response[
-              key
-            ]}`
-          );
-        }
-      });
-
-    if (
-      !response.transports.every((transport) => typeof transport === "string")
-    ) {
-      throw new Error(
-        `Credential response transports property elements must be of type 'string'.`
-      );
-    }
   } catch (error) {
     throw error;
   }
 }
 
 function validAssertion(credential) {
-  const KEYS_STR = ["authenticatorData"];
-  const KEYS = KEYS_STR.concat();
+  const KEYS_STR = ["authenticatorData", "signature"];
+  const KEYS = [].concat(KEYS_STR);
   try {
     validPublicKeyCredential(credential);
     const { response } = credential;

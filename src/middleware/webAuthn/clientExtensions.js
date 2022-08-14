@@ -4,9 +4,11 @@ const debug = require("util").debug(
 );
 
 exports.validClientExtensions = function validClientExtensions(req, res, next) {
-  const { clientExtensionResults } = req.body.credential;
-  debug(`verify`, JSON.stringify(clientExtensionResults, null, 2));
-  //nyi, step 17
+  const { clientExtensionResults } = req.body;
+  if (clientExtensionResults) {
+    debug(`verify`, JSON.stringify(clientExtensionResults, null, 2));
+    //nyi, step 17
+  }
   next();
 };
 
@@ -15,8 +17,10 @@ exports.evaluateClientExtensions = function evaluateClientExtensions(
   res,
   next
 ) {
-  const { clientExtensionResults } = req.body.credential;
-  debug(`evaluate`, JSON.stringify(clientExtensionResults, null, 2));
-  //nyi, step 17
+  const { clientExtensionResults } = req.body;
+  if (clientExtensionResults) {
+    debug(`evaluate`, JSON.stringify(clientExtensionResults, null, 2));
+    //nyi, step 17
+  }
   next();
 };

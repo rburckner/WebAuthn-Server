@@ -1,14 +1,10 @@
 function ParseClientDataFromBuffer(buffer) {
-  return JSON.parse(buffer.toString());
+  return JSON.parse(String.fromCharCode.apply(null, new Uint8Array(buffer)));
 }
 
 exports.ParseClientDataFromJSON = function ParseClientDataFromJSON(
   clientDataJSON
 ) {
-  const buffer = Buffer.from(clientDataJSON, "base64");
-  const clientData = ParseClientDataFromBuffer(buffer);
-  const challenge = Buffer.from(clientData.challenge, "base64").toString(
-    "base64"
-  );
-  return { ...clientData, challenge };
+  const buffer = Buffer.from(clientDataJSON, "base64url");
+  return ParseClientDataFromBuffer(buffer);
 };

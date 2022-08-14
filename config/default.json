@@ -29,7 +29,7 @@
     "ChallengeByteLength": 32,
     "Origin": "http://localhost:4200",
     "PublicKeyCredentialCreationOptions": {
-      "attestation": "direct",
+      "attestation": "none",
       "authenticatorSelection": {
         "userVerification": "preferred",
         "authenticatorAttachement": "cross-platform"
@@ -49,19 +49,27 @@
         "id": "localhost",
         "name": "Dummy Relying Party"
       },
+      "rpId": "localhost",
       "extensions": {
-        "credProps": true
+        "credProps": true,
+        "uvm": true,
+        "loc": true,
+        "txAuthSimple": "Could you please verify yourself?"
       }
     },
     "PublicKeyCredentialRequestOptions": {
-      "extensions": {},
+      "extensions": {
+        "credProps": false,
+        "uvm": true,
+        "loc": true,
+        "txAuthSimple": "Could you please verify yourself?"
+      },
       "rpId": "localhost",
       "userVerification": "preferred"
     },
     "Timeouts": {
       "default": 300000,
       "discouraged": 120000
-    },
-    "UniqueCredentialIds": true
+    }
   }
 }

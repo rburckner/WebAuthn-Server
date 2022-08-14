@@ -13,25 +13,17 @@ exports.decorateLocalObject = function decorateLocalObject(req, res, next) {
   next();
 };
 
-exports.decorateDisplayName = function decorateDisplayName(req, res, next) {
-  const displayName =
-    req.body.displayName || req.body.username || req.body.name;
-  if (!displayName) {
-    next(
-      createError(
-        400,
-        `Request body 'displayname', 'username', or 'name' paramater required`
-      )
-    );
-  }
-  res.locals.displayName = displayName;
-  next();
-};
-
-exports.decorateIdentity = async function decorateIdentity(req, res, next) {
-  const { displayName } = res.locals;
+exports.decorateIdentityFromBody = async function decorateIdentityFromBody(
+  req,
+  res,
+  next
+) {
+  const { userId } = req.body;
   try {
-    res.locals.identity = await Identity.findOne({ displayName });
+    if (userId) {
+      debug(`Decorated identity object for userId: ${userId}`);
+      res.locals.identity = await Identity.findById(userId);
+    }
     next();
   } catch (error) {
     next(error);

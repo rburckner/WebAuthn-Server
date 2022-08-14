@@ -138,9 +138,9 @@ function verifySignature(signature, data, publicKey) {
 /**
  * Generates random base64 string; default length is 32
  */
-function randomBase64(len = 32) {
+function randomBase64url(len = 32) {
   const buff = randomBytes(len);
-  return buff.toString("base64");
+  return buff.toString("base64url");
 }
 
 module.exports = {
@@ -151,5 +151,5 @@ module.exports = {
   convertCOSEPublicKeyToRawPKCSECDHAKey,
   getX509CertificateInfo,
   verifySignature,
-  randomBase64,
+  randomBase64url,
 };

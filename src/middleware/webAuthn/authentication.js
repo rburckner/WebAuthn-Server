@@ -10,45 +10,40 @@ exports.validAuthenticationAssertion = function validAuthenticationAssertion(
 ) {
   debug("validAuthenticationAssertion");
   let message = "";
-  const { authenticatorAttachment, id, response, type } = req.body.credential;
-  if (typeof authenticatorAttachment !== "string") {
-    message = "Request body.credential requires 'authenticatorAttachment'";
-    debug("validAuthenticationAssertion", message);
-    return next(createError(400, message));
-  }
+  const { id, response, type, userId } = req.body;
   if (typeof id !== "string") {
-    message = "Request body.credential requires 'id'";
+    message = "Request body requires 'id'";
     debug("validAuthenticationAssertion", message);
     return next(createError(400, message));
   }
   if (typeof response !== "object") {
-    message = "Request body.credential requires 'response'";
-    debug("validAuthenticationAssertion", message);
-    return next(createError(400, message));
-  }
-  if (typeof authenticatorAttachment !== "string") {
-    message = "Request body.credential requires 'authenticatorAttachment'";
+    message = "Request body requires 'response'";
     debug("validAuthenticationAssertion", message);
     return next(createError(400, message));
   }
   if (typeof type !== "string") {
-    message = "Request body.credential requires 'type'";
+    message = "Request body requires 'type'";
+    debug("validAuthenticationAssertion", message);
+    return next(createError(400, message));
+  }
+  if (typeof userId !== "string") {
+    message = "Request body requires 'userId'";
     debug("validAuthenticationAssertion", message);
     return next(createError(400, message));
   }
   const { authenticatorData, clientDataJSON, signature } = response;
   if (typeof authenticatorData !== "string") {
-    message = "Request body.credential.response requires 'authenticatorData'";
+    message = "Request body.response requires 'authenticatorData'";
     debug("validAuthenticationAssertion", message);
     return next(createError(400, message));
   }
   if (typeof clientDataJSON !== "string") {
-    message = "Request body.credential.response requires 'clientDataJSON'";
+    message = "Request body.response requires 'clientDataJSON'";
     debug("validAuthenticationAssertion", message);
     return next(createError(400, message));
   }
   if (typeof signature !== "string") {
-    message = "Request body.credential.response requires 'clientDataJSON'";
+    message = "Request body.response requires 'clientDataJSON'";
     debug("validAuthenticationAssertion", message);
     return next(createError(400, message));
   }

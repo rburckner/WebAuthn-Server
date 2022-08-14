@@ -14,16 +14,6 @@ const SCHEMA_OPTIONS = {
 
 const schema = new Schema(
   {
-    displayName: {
-      required: true,
-      trim: true,
-      type: String,
-    },
-    name: {
-      required: true,
-      trim: true,
-      type: String,
-    },
     webauthn: {
       challenges: [
         {
@@ -35,9 +25,10 @@ const schema = new Schema(
         {
           id: { type: String },
           publicKey: { type: String },
-          type: { type: String },
+          publicKeyAlgorithm: { type: Number },
           signCount: { type: Number },
           transports: [String],
+          type: { type: String },
           createdAt: { type: Date, default: Date.now() },
         },
       ],

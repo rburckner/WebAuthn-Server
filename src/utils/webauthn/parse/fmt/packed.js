@@ -29,7 +29,8 @@ async function ParsePackedAttestationObject(cborDecoded, clientDataJSON) {
     authDataAB: authData,
     credentialData: {
       aaguid: aaguid.toString("base64"),
-      COSEPublicKey: Object.fromEntries(decodedCOSEPublicKeyMap),
+      COSEPublicKey: COSEPublicKey.toString("base64"),
+      COSEPublicKeyObject: Object.fromEntries(decodedCOSEPublicKeyMap),
       credentialId: credentialId.toString("base64"),
     },
     flags,

@@ -13,10 +13,19 @@ exports.verifyPublicKeyAlgortithm = async function verifyPublicKeyAlgortithm(
   const { pubKeyCredParams } = config.get(
     "webauthn.PublicKeyCredentialCreationOptions"
   );
-  debug("verifyPublicKeyAlgortithm");
-  const { alg } = res.locals.credential.response.attestationObject.attStmt;
-  if (!pubKeyCredParams.map((param) => param.alg).includes(alg)) {
-    return next(createError(400, `Public Key algorithm not accepted.`));
+  function isAPublicKeyAttestation(attestationObject) {
+    const { alg } = attestationObject.attStmt;
+    return typeof alg !== "undefined";
+  }
+  const { response } = res.locals.credential;
+  const { attestationObject } = response;
+
+  if (isAPublicKeyAttestation(attestationObject)) {
+    debug("verifyPublicKeyAlgortithm");
+    const { alg } = attestationObject.attStmt;
+    if (!pubKeyCredParams.map((param) => param.alg).includes(alg)) {
+      return next(createError(400, `Public Key algorithm not accepted.`));
+    }
   }
   next();
 };
@@ -24,13 +33,10 @@ exports.verifyPublicKeyAlgortithm = async function verifyPublicKeyAlgortithm(
 exports.validateRegistrationAttestation =
   function validateRegistrationAttestation(req, res, next) {
     debug("validateRegistrationAttestation");
+    debug(JSON.stringify(req.body, null, 2));
+
     let message = "";
-    const { authenticatorAttachment, id, response, type } = req.body.credential;
-    if (typeof authenticatorAttachment !== "string") {
-      message = "Request body requires 'authenticatorAttachment'";
-      debug("validateRegistrationAttestation", message);
-      return next(createError(400, message));
-    }
+    const { id, response, type } = req.body;
     if (typeof id !== "string") {
       message = "Request body requires 'id'";
       debug("validateRegistrationAttestation", message);
@@ -38,11 +44,6 @@ exports.validateRegistrationAttestation =
     }
     if (typeof response !== "object") {
       message = "Request body requires 'response'";
-      debug("validateRegistrationAttestation", message);
-      return next(createError(400, message));
-    }
-    if (typeof authenticatorAttachment !== "string") {
-      message = "Request body requires 'authenticatorAttachment'";
       debug("validateRegistrationAttestation", message);
       return next(createError(400, message));
     }
@@ -77,7 +78,6 @@ exports.verifyRelyingPartyIdHash = async function verifyRelyingPartyIdHash(
   next
 ) {
   debug("verifyRelyingPartyIdHash");
-  console.log(223, res.locals.credential.response);
   const { id } = config.get("webauthn.PublicKeyCredentialCreationOptions.rp");
   const { rpIdHash } =
     res.locals.credential.response.attestationObject.authData;

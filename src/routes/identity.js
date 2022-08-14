@@ -2,10 +2,9 @@
 const { Router } = require("express");
 
 const {
-  decorateDisplayName,
   decorateLocalObject,
   decorateRemoteAddress,
-  decorateIdentity,
+  decorateIdentityFromBody,
 } = require("../middleware/common");
 
 const {
@@ -28,20 +27,16 @@ const {
 const { webauthn } = require("../controllers");
 
 const router = Router();
-router.all(
-  decorateLocalObject,
-  decorateDisplayName,
-  decorateRemoteAddress,
-  decorateIdentity
-);
+router.all(decorateLocalObject, decorateRemoteAddress);
 
 router
   .route("/webauthn/authenticate/request")
-  .post(webauthn.authenicate.request);
+  .post(decorateIdentityFromBody, webauthn.authenicate.request);
 
 router.route("/webauthn/authenticate/assert").post(
   validAuthenticationAssertion,
   decorateAssertionLocals,
+  decorateIdentityFromBody,
   // verify authentication assertion
   verifyClientChallengeTypeIsGet,
   verifyClientChallengeOrigin,
@@ -57,6 +52,7 @@ router.route("/webauthn/authenticate/assert").post(
 router.route("/webauthn/register/attest").post(
   validateRegistrationAttestation,
   decorateAttestationLocals,
+  decorateIdentityFromBody,
   // verify credential attestation
   verifyClientChallengeTypeIsCreate,
   verifyClientChallengeOrigin,
@@ -69,5 +65,5 @@ router.route("/webauthn/register/attest").post(
   // controller
   webauthn.register.attest
 );
-router.route("/webauthn/register/request").post(webauthn.register.create);
+router.route("/webauthn/register/request").get(webauthn.register.create);
 module.exports = router;

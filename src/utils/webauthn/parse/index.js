@@ -1,15 +1,24 @@
+const debug = require("util").debug(
+  `${process.env.SERVER_NAME}:utils:webauthn:parse`
+);
 const { decodeFirst } = require("cbor");
 
 const { ParseClientDataFromJSON } = require("./clientData");
 const { ParseAuthenticatorData } = require("./authenticatorData");
+const { ParseNoneAttestationObject } = require("./fmt/none");
 const { ParsePackedAttestationObject } = require("./fmt/packed");
 const { ParseU2FAttestationObject } = require("./fmt/u2f");
 const { validAssertion, validAttestation } = require("../validation");
 
-async function ParseAttestationObject(response) {
-  const { attestationObject, clientDataJSON } = response;
+async function ParseAttestationObject({
+  /* credential.response */
+  attestationObject,
+  clientDataJSON,
+}) {
   const attestationObjectBuffer = Buffer.from(attestationObject, "base64");
   const cborDecodedAttestationObj = await decodeFirst(attestationObjectBuffer);
+
+  debug(`Parsing format: ${cborDecodedAttestationObj.fmt}`);
   switch (cborDecodedAttestationObj.fmt) {
     //https://www.iana.org/assignments/webauthn/webauthn.xhtml
     case "apple":
@@ -24,7 +33,10 @@ async function ParseAttestationObject(response) {
         clientDataJSON
       );
     case "none":
-      return {};
+      return await ParseNoneAttestationObject(
+        cborDecodedAttestationObj,
+        clientDataJSON
+      );
     case "packed":
       return await ParsePackedAttestationObject(
         cborDecodedAttestationObj,

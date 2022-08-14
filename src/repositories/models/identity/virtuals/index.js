@@ -1,19 +1,27 @@
 "use strict";
 module.exports = (schema) => {
-  schema.virtual("username").get(function () {
-    return this.displayName;
-  });
-
-  schema.virtual("username").set(function (username) {
-    this.displayName = username;
+  schema.virtual("displayName").get(function () {
+    return "todo - displayName";
   });
 
   schema.virtual("excludeCredentials").get(function () {
     if (!this.webauthn.credentials) {
-      return null;
+      return undefined;
     }
     return this.webauthn.credentials.map((credential) => {
       return { id: credential.id, type: credential.type };
     });
+  });
+
+  schema.virtual("name").get(function () {
+    return "todo - name";
+  });
+
+  schema.virtual("user").get(function () {
+    return {
+      id: this.id,
+      displayName: this.displayName,
+      name: this.name,
+    };
   });
 };

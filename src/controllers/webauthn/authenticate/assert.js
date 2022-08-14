@@ -1,23 +1,20 @@
-const config = require("config");
 const createError = require("http-errors");
 const debug = require("util").debug(
   `${process.env.SERVER_NAME}:controllers:webauthn:authenticate:assert`
 );
 
-module.exports = async function authenticate(req, res, next) {
+module.exports = async function assert(req, res, next) {
   debug(`Evaluating`);
-  const { displayName, identity, credential } = res.locals;
+  const { credential, identity, userId } = res.locals;
   if (!identity) {
-    return next(
-      createError(400, `Identity with Display Name '${displayName}' not found.`)
-    );
+    return next(createError(400, `Identity ID '${userId}' not found.`));
   }
   try {
     if (!identity.validChallenge(credential)) {
       return next(createError(400, `Invalid challenge.`));
     }
     await identity.removeChallenge(credential);
-    const { id } = res.locals.credential;
+    const { id } = credential;
     const { signCount } =
       res.locals.credential.response.authenticatorDataObject;
     if (identity.credential(id).signCountLTET(signCount)) {
