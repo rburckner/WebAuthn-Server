@@ -54,7 +54,6 @@ exports.ParseAuthenticatorData = function ParseAuthenticatorData(authData) {
     ),
     signCount: counterBuf.readUInt32BE(0),
   };
-
   if (flags.AT) {
     result.aaguid = authData.slice(
       BYTE_MAP.aaguid.start(),

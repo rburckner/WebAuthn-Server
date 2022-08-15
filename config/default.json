@@ -51,18 +51,16 @@
       },
       "rpId": "localhost",
       "extensions": {
-        "credProps": true,
-        "uvm": true,
-        "loc": true,
-        "txAuthSimple": "Could you please verify yourself?"
+        "credProps": false,
+        "loc": false,
+        "uvm": false
       }
     },
     "PublicKeyCredentialRequestOptions": {
       "extensions": {
         "credProps": false,
-        "uvm": true,
-        "loc": true,
-        "txAuthSimple": "Could you please verify yourself?"
+        "uvm": false,
+        "loc": false
       },
       "rpId": "localhost",
       "userVerification": "preferred"
