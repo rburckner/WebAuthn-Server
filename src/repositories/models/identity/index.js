@@ -1,6 +1,5 @@
-"use strict";
 const mongoose = require("mongoose");
-const { Schema, Types } = mongoose;
+const { Schema } = mongoose;
 
 const methods = require("./methods");
 const pre = require("./pre");

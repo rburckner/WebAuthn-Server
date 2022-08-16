@@ -1,4 +1,3 @@
-"use strict";
 const config = require("config");
 const createError = require("http-errors");
 const { randomBase64url } = require("../../../../utils/crypto");

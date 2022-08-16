@@ -1,7 +1,6 @@
 /**
  * This config file loads all the 'dotenv' options
  */
-"use strict";
 require("dotenv").config();
 const genRanHex = (size = 32) =>
   [...Array(size)]

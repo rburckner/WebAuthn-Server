@@ -1,4 +1,3 @@
-"use strict";
 exports.ArrayBufferToBase64url = function ArrayBufferToBase64url(arrayBuffer) {
   if (typeof arrayBuffer === "undefined") {
     return undefined;

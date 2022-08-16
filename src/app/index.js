@@ -1,4 +1,3 @@
-"use strict";
 const config = require("config");
 const debug = require("util").debug(`${process.env.SERVER_NAME}:app`);
 const express = require("express");

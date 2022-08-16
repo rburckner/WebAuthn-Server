@@ -1,4 +1,3 @@
-"use strict";
 const { Router } = require("express");
 
 const {
@@ -6,7 +5,6 @@ const {
   decorateRemoteAddress,
   decorateIdentityFromBody,
 } = require("../middleware/common");
-
 const {
   decorateAssertionLocals,
   decorateAttestationLocals,
@@ -23,7 +21,6 @@ const {
   verifyAuthDataFlagsUserPresentFromAttestationObject,
   verifyAuthDataFlagsUserPresentFromResponse,
 } = require("../middleware/webAuthn");
-
 const { webauthn } = require("../controllers");
 
 const router = Router();

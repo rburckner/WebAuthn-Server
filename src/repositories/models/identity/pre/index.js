@@ -1,4 +1,3 @@
-"use strict";
 const debug = require("util").debug(
   `${process.env.SERVER_NAME}:repositories:models:identities:pre`
 );

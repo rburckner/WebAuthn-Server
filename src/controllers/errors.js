@@ -1,4 +1,3 @@
-"use strict";
 const createError = require("http-errors");
 
 exports.RouterErrorHandler = (error, req, res, next) => {

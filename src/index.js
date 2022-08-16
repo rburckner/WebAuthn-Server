@@ -1,4 +1,3 @@
-"use strict";
 const config = require("config");
 const debug = require("util").debug(`${process.env.SERVER_NAME}:server`);
 const http = require("http");
