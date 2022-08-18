@@ -13,6 +13,13 @@ const SCHEMA_OPTIONS = {
 
 const schema = new Schema(
   {
+    nonces: [
+      {
+        nonce: { type: String },
+        createdAt: { type: Date, default: Date.now() },
+        expiresOn: { type: Date, default: Date.now() + 300000 },
+      },
+    ],
     webauthn: {
       challenges: [
         {

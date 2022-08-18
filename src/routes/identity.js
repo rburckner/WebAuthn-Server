@@ -21,10 +21,15 @@ const {
   verifyAuthDataFlagsUserPresentFromAttestationObject,
   verifyAuthDataFlagsUserPresentFromResponse,
 } = require("../middleware/webAuthn");
-const { webauthn } = require("../controllers");
+const { decorateIdentityByNonce } = require("../middleware/nonce");
+const { nonce, webauthn } = require("../controllers");
 
 const router = Router();
 router.all(decorateLocalObject, decorateRemoteAddress);
+
+router
+  .route("/nonce/registration/request")
+  .post(decorateIdentityFromBody, nonce.generateNonce);
 
 router
   .route("/webauthn/authenticate/request")
@@ -45,6 +50,10 @@ router.route("/webauthn/authenticate/assert").post(
   // controller
   webauthn.authenicate.assert
 );
+
+router
+  .route("/webauthn/authenticate/request/from/nonce")
+  .post(decorateIdentityByNonce, webauthn.authenicate.fromNonce);
 
 router.route("/webauthn/register/attest").post(
   validateRegistrationAttestation,

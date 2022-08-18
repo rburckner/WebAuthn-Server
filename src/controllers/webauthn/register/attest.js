@@ -6,7 +6,7 @@ const Identity = require("../../../repositories/models/identity");
 
 module.exports = async function attestation(req, res, next) {
   debug(`Evaluating`);
-  const { credential, identity } = res.locals;
+  const { credential, identity, userId } = res.locals;
   if (!identity) {
     return next(createError(400, `Identity ID '${userId}' not found.`));
   }
@@ -25,6 +25,9 @@ module.exports = async function attestation(req, res, next) {
     debug(`Complete`);
     res.json({ token });
   } catch (error) {
+    if (identity.validChallenge(credential)) {
+      await identity.removeChallenge(credential);
+    }
     next(createError(500, error));
   }
 };

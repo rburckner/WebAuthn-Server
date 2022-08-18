@@ -7,6 +7,10 @@
       "format": "dev"
     }
   },
+  "nonce": {
+    "length": 12,
+    "validityPeriod": 300000
+  },
   "repositories": {
     "mongoose": {
       "host": "localhost",
