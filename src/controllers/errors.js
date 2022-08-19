@@ -1,4 +1,7 @@
 const createError = require("http-errors");
+const debug = require("util").debug(
+  `${process.env.SERVER_NAME}:controllers:errors`
+);
 
 exports.RouterErrorHandler = (error, req, res, next) => {
   if (process.env.NODE_ENV !== "production") {
@@ -22,5 +25,8 @@ exports.RouterErrorHandler = (error, req, res, next) => {
 };
 
 exports.RouteNotFound = (req, res, next) => {
+  if (process.env.NODE_ENV !== "production") {
+    debug(`Route Not Found: ${req.url}`);
+  }
   next(createError(404));
 };

@@ -1,4 +1,3 @@
-"use strict";
 const { decodeFirst } = require("cbor");
 const { createHash, createVerify, randomBytes } = require("crypto");
 const { X509 } = require("jsrsasign");

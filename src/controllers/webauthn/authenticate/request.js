@@ -1,4 +1,3 @@
-const config = require("config");
 const createError = require("http-errors");
 const debug = require("util").debug(
   `${process.env.SERVER_NAME}:controllers:webauthn:authenticate:request`

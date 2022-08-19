@@ -5,6 +5,8 @@ const {
   decorateRemoteAddress,
   decorateIdentityFromBody,
 } = require("../middleware/common");
+const { validateAccessToken } = require("../middleware/jwt");
+const { decorateIdentityByNonce } = require("../middleware/nonce");
 const {
   decorateAssertionLocals,
   decorateAttestationLocals,
@@ -21,7 +23,6 @@ const {
   verifyAuthDataFlagsUserPresentFromAttestationObject,
   verifyAuthDataFlagsUserPresentFromResponse,
 } = require("../middleware/webAuthn");
-const { decorateIdentityByNonce } = require("../middleware/nonce");
 const { nonce, webauthn } = require("../controllers");
 
 const router = Router();
@@ -29,7 +30,7 @@ router.all(decorateLocalObject, decorateRemoteAddress);
 
 router
   .route("/nonce/registration/request")
-  .post(decorateIdentityFromBody, nonce.generateNonce);
+  .get(validateAccessToken, nonce.generateNonce);
 
 router
   .route("/webauthn/authenticate/request")

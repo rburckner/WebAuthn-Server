@@ -16,7 +16,7 @@ function expiredNonceEntry(entry) {
 }
 
 exports.generateNonce = async function generateNonce() {
-  debug(`Generating for userId:${this.id}`);
+  debug(`Generating for userId: ${this.id}`);
   const nonce = crypto.randomBytes(parseInt(length / 2)).toString("hex");
   const expiresOn = Date.now() + parseInt(validityPeriod);
   this.nonces.push({ nonce, expiresOn });
